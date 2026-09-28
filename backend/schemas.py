@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
+from datetime import datetime
 
 # ============================================
 # USER SCHEMAS
@@ -57,7 +58,7 @@ class InteractionResponse(BaseModel):
     item_id: int
     interaction_type: str
     rating: Optional[int] = None
-    timestamp: Optional[str] = None
+    timestamp: Optional[datetime] = None
     
     class Config:
         from_attributes = True

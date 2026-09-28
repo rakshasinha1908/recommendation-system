@@ -468,16 +468,22 @@ class RecommendationEngine:
         """Clear cached recommendations for a user"""
         if not self.use_cache:
             return
-        
+    
         try:
-            keys = [
+            keys_to_delete = [
                 f"recommendations:hybrid:{user_id}",
             ]
-            for key in keys:
+        
+            for key in keys_to_delete:
                 try:
                     self.redis_client.delete(key)
-                except:
-                    pass
+                    logger.debug(f"[CACHE] Deleted key: {key}")
+                except redis.ConnectionError as e:
+                    logger.warning(f"[CACHE] Redis connection error: {str(e)}")
+                except Exception as e:
+                    logger.warning(f"[CACHE] Failed to delete {key}: {str(e)}")
+        
             logger.info(f"[CACHE] Invalidated cache for user {user_id}")
+    
         except Exception as e:
-            logger.warning(f"[CACHE] Invalidation error: {str(e)}")
+            logger.warning(f"[CACHE] Cache invalidation failed: {str(e)}")
